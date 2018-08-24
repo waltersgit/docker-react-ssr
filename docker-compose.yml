@@ -1,0 +1,66 @@
+version: "2"
+
+services:
+    backend:
+        restart: always
+        command: npm run dev
+        build: ./backend/.
+        ports:
+            - "5000:5000"
+        links:
+            - mongo
+            - redis
+        networks:
+            - backend-bridge
+        volumes:
+            - ./backend/:/usr/app
+            - /usr/app/node_modules
+            - /usr/app/build
+    frontend:
+        restart: always
+        build: ./frontend/.
+        command: npm run dev
+        volumes:
+            - ./frontend/:/usr/app/src
+            - /usr/app/src/node_modules
+            - /usr/app/src/build
+            - /usr/app/src/public
+        networks:
+            - backend-bridge
+        ports:
+            - "3000:3000"
+    nginx:
+        restart: always
+        build: ./nginx/
+        ports:
+            - 80:80
+        networks:
+            - backend-bridge
+        volumes_from:
+            - frontend
+        links:
+            - frontend
+            - backend
+    mongo:
+        image: bitnami/mongodb:3.6-master
+        volumes:
+            - ./data:/bitnami
+        ports:
+            - "27017:27017"
+        environment:
+            - MONGODB_ROOT_PASSWORD=root
+        networks:
+            - backend-bridge
+    redis:
+        image: bitnami/redis:latest
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - '6379:6379'
+        volumes:
+            - ./redis-persistence:/bitnami
+        networks:
+            - backend-bridge
+
+networks:
+    backend-bridge:

@@ -1,0 +1,12 @@
+{
+  "test": {
+    "PORT": 5000,
+    "MONGODB_URI": "mongodb://root:root@mongo:27017/Test?authSource=admin",
+    "JWT_SECRET": "pjasdfojjpoj123"
+  },
+  "development": {
+    "PORT": 5000,
+    "MONGODB_URI": "mongodb://root:root@mongo:27017/Test?authSource=admin",
+    "JWT_SECRET": "adslfkjalsdfj111"
+  }
+}
